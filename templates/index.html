@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block body %}
+
+
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('{{ url_for('static',filename='assets/img/home-bg.jpg') }}')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="site-heading">
+                        <h1>{{params['blog_name']}}</h1>
+                        <span class="subheading">{{params['tag_line']}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </header>
+    <!-- Main Content-->
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+
+        <!-- Todo : Fetch it using for loop from the database -->
+        <!-- Post preview-->
+        {% for post in posts %}
+
+            <div class="post-preview">
+
+                {% if post.img_file %}
+    <a href="{{ url_for('post_route', post_slug=post.slug) }}">
+
+        {% if post.img_file.startswith('http://') or post.img_file.startswith('https://') %}
+
+            <img
+                src="{{ post.img_file }}"
+                alt="{{ post.title }}"
+                style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;"
+                onerror="this.onerror=null; this.src='{{ url_for('static', filename='assets/img/home-bg.jpg') }}';">
+
+        {% else %}
+
+            <img
+                src="{{ url_for('static', filename='assets/img/' + post.img_file) }}"
+                alt="{{ post.title }}"
+                style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;"
+                onerror="this.onerror=null; this.src='{{ url_for('static', filename='assets/img/home-bg.jpg') }}';">
+
+        {% endif %}
+
+    </a>
+{% endif %}
+                <a href="{{ url_for('post_route', post_slug=post.slug) }}">
+
+                    <h2 class="post-title">
+                        {{ post.title }}
+                    </h2>
+
+                    <h3 class="post-subtitle">
+<!--                        {{ post.content[:160] }}{% if post.content|length > 160 %}...{% endif %}-->
+                            {{ post.content_html | striptags | truncate(160) }}
+
+                    </h3>
+
+                </a>
+
+                <p class="post-meta">
+                    Posted by
+                    <a href="#!">The Magic Coder</a>
+                    on {{ post.date }}
+                </p>
+
+            </div>
+
+            <hr class="my-4" />
+
+        {% endfor %}
+                
+        <!-- Pager -->
+        <div class="d-flex justify-content-between mb-4">
+
+            {% if page > 1 %}
+                <a class="btn btn-primary text-uppercase"
+                   href="/page/{{ page - 1 }}">
+                    ← Previous
+                </a>
+            {% endif %}
+
+            {% if page < total_pages %}
+                <a class="btn btn-primary text-uppercase"
+                   href="/page/{{ page + 1 }}">
+                    Next →
+                </a>
+            {% endif %}
+
+        </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

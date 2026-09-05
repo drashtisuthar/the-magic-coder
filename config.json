@@ -1,0 +1,13 @@
+{
+  "params":
+  {
+    "local_server": "True",
+    "tw_url": "https://twitter.com/codingthunder",
+    "fb_url": "https://facebook.com/codingthunder",
+    "gh_url": "https://github.com/codingthunder",
+    "blog_name": "The Magic Coder",
+    "tag_line": "A Blog liked by the Magic Coders.",
+    "about_text": "Hi, my name is Drashti and I'm learn some new things.",
+    "no_of_posts": 2
+  }
+}

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <h2>Admin Login</h2>
+
+    <form method="POST" action="{{ url_for('dashboard') }}">
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="mb-3">
+        <label>Username</label>
+        <input
+            type="text"
+            class="form-control"
+            name="uname"
+            placeholder="Enter username"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label>Password</label>
+        <input
+            type="password"
+            class="form-control"
+            name="pass"
+            placeholder="Enter your password"
+            required>
+    </div>
+
+    <button class="btn btn-primary">
+        Login
+    </button>
+
+</form>
+
+</div>
+
+{% endblock %}

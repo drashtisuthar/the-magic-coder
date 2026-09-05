@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="container" style="margin-top: 150px;">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-10 col-lg-8">
+
+            <h2 class="mb-4">
+                Search Results
+            </h2>
+
+            {% if query %}
+
+                <p class="text-muted">
+                    Search results for:
+                    <strong>{{ query }}</strong>
+                </p>
+
+            {% endif %}
+
+            <hr>
+
+            {% if posts %}
+
+                {% for post in posts %}
+
+                    <div class="post-preview">
+
+                        <a href="{{ url_for(
+                            'post_route',
+                            post_slug=post.slug
+                        ) }}">
+
+                            <h2 class="post-title">
+                                {{ post.title }}
+                            </h2>
+
+                            <h3 class="post-subtitle">
+                                {{ post.content_html
+                                   | striptags
+                                   | truncate(160) }}
+                            </h3>
+
+                        </a>
+
+                        <p class="post-meta">
+                            Posted by
+                            <strong>The Magic Coder</strong>
+                            on {{ post.date }}
+                        </p>
+
+                    </div>
+
+                    <hr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="alert alert-warning">
+
+                    No posts found for
+                    <strong>{{ query }}</strong>.
+
+                </div>
+
+            {% endif %}
+
+            <a href="{{ url_for('home') }}"
+               class="btn btn-primary">
+
+                ← Back to Home
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

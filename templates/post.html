@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<!-- Post Header -->
+<!-- Post Header -->
+
+{% if post.img_file %}
+
+    {% if post.img_file.startswith('http://') or post.img_file.startswith('https://') %}
+
+        {% set image_url = post.img_file %}
+
+    {% else %}
+
+        {% set image_url = url_for(
+            'static',
+            filename='assets/img/' + post.img_file
+        ) %}
+
+    {% endif %}
+
+{% else %}
+
+    {% set image_url = url_for(
+        'static',
+        filename='assets/img/home-bg.jpg'
+    ) %}
+
+{% endif %}
+
+
+<header class="masthead post-header"
+        style="background-image: url('{{ image_url }}')">
+
+    <div class="post-header-overlay"></div>
+
+    <div class="container position-relative px-4 px-lg-5">
+
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+
+            <div class="col-md-10 col-lg-8 col-xl-7">
+
+                <div class="post-heading">
+
+                    <h1>{{ post.title }}</h1>
+
+                    <span class="meta">
+                        Posted by
+                        <a href="#!">The Magic Coder</a>
+                        on {{ post.date }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<article class="mb-4 blog-article">
+
+    <div class="container px-4 px-lg-5">
+
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+
+            <div class="col-md-10 col-lg-8 col-xl-7">
+
+                <div class="post-content">
+                    {{ content_html|safe }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</article>
+
+
+<!-- Back to Home -->
+<div class="container px-4 px-lg-5 mb-5">
+
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+
+        <div class="col-md-10 col-lg-8 col-xl-7">
+
+            <a href="{{ url_for('home') }}"
+               class="btn btn-primary text-uppercase">
+                ← Back to All Posts
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
