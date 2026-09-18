@@ -58,6 +58,8 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
 
 UPLOAD_FOLDER = os.path.join(app.static_folder, "assets", "img")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 app.config.update(
@@ -70,10 +72,39 @@ app.config.update(
 )
 mail = Mail(app)
 
+# ================= DATABASE CONFIGURATION =================
+
+# Path of Aiven SSL certificate
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+CA_CERT_PATH = os.path.join(BASE_DIR, "certs", "ca.pem")
+
+
+
 if local_server:
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("LOCAL_DATABASE_URI")
+
+    # Local MySQL Database
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+        "LOCAL_DATABASE_URI"
+    )
+
 else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("PROD_DATABASE_URI")
+
+    # Aiven Production MySQL Database
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+        "PROD_DATABASE_URI"
+    )
+
+    # SSL connection for Aiven
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "connect_args": {
+            "ssl": {
+                "ca": CA_CERT_PATH
+            }
+        }
+    }
+
+
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
@@ -496,6 +527,4 @@ def delete_contact(sno):
 
 
 if __name__ == "__main__":
-    debug_mode = os.getenv("FLASK_DEBUG", "False").lower() == "true"
-    app.run(debug=debug_mode)
-
+    app.run(debug=False)
