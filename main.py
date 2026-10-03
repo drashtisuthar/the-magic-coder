@@ -2,19 +2,18 @@ from flask import Flask, render_template, request, session, redirect, url_for, f
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail
 from datetime import datetime
-import json,os,math,markdown,uuid
+import json,os,math,markdown,uuid,resend
 from werkzeug.utils import secure_filename
 
 load_dotenv()
+
 
 required_env_vars = [
     "FLASK_SECRET_KEY",
     "LOCAL_DATABASE_URI",
     "PROD_DATABASE_URI",
-    "GMAIL_USERNAME",
-    "GMAIL_PASSWORD",
+    "RESEND_API_KEY",
     "ADMIN_USERNAME",
     "ADMIN_PASSWORD"
 ]
@@ -62,15 +61,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-app.config.update(
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=587,
-    MAIL_USE_TLS=True,
-    MAIL_USE_SSL=False,
-    MAIL_USERNAME=os.getenv("GMAIL_USERNAME"),
-    MAIL_PASSWORD=os.getenv("GMAIL_PASSWORD"),
-)
-mail = Mail(app)
 
 # ================= DATABASE CONFIGURATION =================
 
@@ -242,6 +232,10 @@ def contact():
             flash("All fields are required.", "danger")
             return redirect(url_for('contact'))
 
+        if not phone.isdigit() or len(phone) != 10:
+            flash("Please enter a valid 10-digit phone number.", "danger")
+            return redirect(url_for('contact'))
+
         # Save contact message
         entry = Contacts(
             name=name,
@@ -255,14 +249,32 @@ def contact():
         db.session.commit()
 
         # Send email notification
-        mail.send_message(
-            'New message from ' + name,
-            sender=email,
-            recipients=[os.getenv("GMAIL_USERNAME")],
-            body=message + "\n" + phone
-        )
+        # Send email notification using Resend
+        try:
+            resend.api_key = os.environ.get("RESEND_API_KEY")
 
-        flash("Your message has been sent successfully!", "success")
+            resend.Emails.send({
+                "from": "onboarding@resend.dev",
+                "to": ["magiccoder10@gmail.com"],
+                "subject": "New message from " + name,
+                "html": f"""
+                    <h3>New Contact Form Message</h3>
+                    <p><strong>Name:</strong> {name}</p>
+                    <p><strong>Email:</strong> {email}</p>
+                    <p><strong>Phone:</strong> {phone}</p>
+                    <p><strong>Message:</strong></p>
+                    <p>{message}</p>
+                """
+            })
+
+            flash("Your message has been sent successfully!", "success")
+
+        except Exception as e:
+            print("RESEND ERROR:", e)
+            flash(
+                "Your message was saved, but the email could not be sent.",
+                "warning"
+            )
 
         return redirect(url_for('contact'))
 
