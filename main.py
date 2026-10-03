@@ -98,6 +98,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+
 class Contacts(db.Model):
     '''sno, name, email, phone_no, msg, date'''
     sno = db.Column(db.Integer, primary_key=True)
@@ -116,9 +117,35 @@ class Posts(db.Model):
     date = db.Column(db.DateTime, nullable=True)
     img_file = db.Column(db.String(255),nullable=True)
 
+@app.context_processor
+def inject_categories():
+
+    all_posts = Posts.query.all()
+
+    categories = set()
+
+    for post in all_posts:
+        if '-' in post.slug:
+            category_name = post.slug.split('-', 1)[0]
+            categories.add(category_name)
+
+    return {
+        "categories": sorted(categories)
+    }
 
 @app.route('/')
 def home():
+
+    # Get all posts for dynamic categories
+    all_posts = Posts.query.all()
+
+    categories = set()
+
+    for post in all_posts:
+        if '-' in post.slug:
+            category_name = post.slug.split('-', 1)[0]
+            categories.add(category_name)
+
     page = 1
     per_page = params['no_of_posts']
 
@@ -140,7 +167,8 @@ def home():
         params=params,
         posts=posts,
         page=page,
-        total_pages=total_pages
+        total_pages=total_pages,
+        categories=sorted(categories)
     )
 
 @app.route('/page/<int:page>')
@@ -210,6 +238,46 @@ def search():
         params=params,
         posts=posts,
         query=query
+    )
+
+@app.route('/posts/<string:category>')
+def posts_by_category(category):
+
+    # Get all posts
+    all_posts = Posts.query.order_by(
+        Posts.sno.desc()
+    ).all()
+
+    # Get category from slug
+    categories = set()
+
+    for post in all_posts:
+        if '-' in post.slug:
+            category_name = post.slug.split('-', 1)[0]
+            categories.add(category_name)
+
+    # Check whether requested category exists
+    if category not in categories:
+        return render_template(
+            "404.html",
+            params=params
+        ), 404
+
+    # Get posts for selected category
+    posts = Posts.query.filter(
+        Posts.slug.like(f"{category}-%")
+    ).order_by(
+        Posts.sno.desc()
+    ).all()
+
+    posts = convert_markdown_posts(posts)
+
+    return render_template(
+        'index.html',
+        params=params,
+        posts=posts,
+        page=1,
+        total_pages=1
     )
 
 
