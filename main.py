@@ -255,7 +255,7 @@ def contact():
 
             resend.Emails.send({
                 "from": "onboarding@resend.dev",
-                "to": ["magiccoder10@gmail.com"],
+                "to": ["drashtisuthar110@gmail.com"],
                 "subject": "New message from " + name,
                 "html": f"""
                     <h3>New Contact Form Message</h3>
