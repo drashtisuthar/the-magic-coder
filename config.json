@@ -2,9 +2,9 @@
   "params":
   {
     "local_server": "True",
-    "tw_url": "https://twitter.com/codingthunder",
-    "fb_url": "https://facebook.com/codingthunder",
-    "gh_url": "https://github.com/codingthunder",
+    "tw_url": "https://twitter.com/",
+    "fb_url": "https://facebook.com/",
+    "gh_url": "https://github.com/",
     "blog_name": "The Magic Coder",
     "tag_line": "A Blog liked by the Magic Coders.",
     "about_text": "Welcome to The Magic Coder!\n\nThis blog is a place where I share my knowledge, learning experiences, programming concepts, projects, and useful tips.\n\nI believe that learning becomes more meaningful when we share what we discover.\n\nThrough this blog, I aim to document my journey, explore new technologies, and share practical knowledge with other developers and learners.\n\nKeep learning. Keep coding. Keep creating.",

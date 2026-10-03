@@ -65,14 +65,15 @@
                                     <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
                                 </div>
                                 <div class="form-floating">
-                                    <input class="form-control" id="phone" name="phone" type="tel" placeholder="Enter your phone number..." data-sb-validations="required" />
+                                    <input class="form-control" id="phone" name="phone" type="tel" placeholder="Enter your phone number..." pattern="[0-9]{10}" minlength="10" maxlength="10" inputmode="numeric" required />
                                     <label for="phone">Phone Number</label>
                                     <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
                                 </div>
                                 <div class="form-floating">
                                     <textarea class="form-control" id="message" name="msg" placeholder="Enter your message here..." style="height: 12rem" data-sb-validations="required"></textarea>
                                     <label for="message">Message</label>
-                                    <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
+                                    <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+                                    <!-- <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>-->
                                 </div>
                                 <br />
                                 <!-- Submit success message-->
