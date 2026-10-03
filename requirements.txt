@@ -1,6 +1,5 @@
 Flask
 Flask-SQLAlchemy
-Flask-Mail
 Flask-WTF
 python-dotenv
 PyMySQL
